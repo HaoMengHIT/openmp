@@ -5740,10 +5740,18 @@ void __kmp_internal_end_fini(void) { __kmp_internal_end_atexit();
   timeend=rdtsc2();
   cpufreq=timeend-timestart;
   //fprintf(stderr,"basetime = %llu, endtime = %llu, cpufreq = %llu\n", baseTime, pendtime, cpufreq);
+  int numthreads = 0;
+  for(int i = 0;i<MAX_THREADS;i++)
+  {
+     if(indexTask[i]<=0)
+        continue;
+     numthreads++;
+  }
   FILE *fp=NULL;
   fp=fopen("cost.txt", "w");
   fprintf(fp,"%10.15lf\n",(double)(pendtime-baseTime)/cpufreq);//execution time of program
   fprintf(fp,"%10.15lf\n",(double)stealTime/cpufreq);//try to steal time of program
+  fprintf(fp,"%d\n",numthreads);//the number of threads
   fclose(fp);
 
   fp=fopen("task.txt", "w");
