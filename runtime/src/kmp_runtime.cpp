@@ -5731,26 +5731,39 @@ __attribute__((destructor)) void __kmp_internal_end_dtor(void) {
 void __kmp_internal_end_fini(void) { __kmp_internal_end_atexit(); 
   /*===========Add by haomeng===========*/
   //fprintf(stderr,"==================Based time: %lld\n",baseTime);
+  cycle_t pendtime = rdtsc2();
+  cycle_t timestart;
+  cycle_t timeend;
+  unsigned cpufreq;
+  timestart=rdtsc2();
+  sleep(1);
+  timeend=rdtsc2();
+  cpufreq=timeend-timestart;
+  //fprintf(stderr,"basetime = %llu, endtime = %llu, cpufreq = %llu\n", baseTime, pendtime, cpufreq);
   FILE *fp=NULL;
   fp=fopen("task.txt", "w");
-  fprintf(stderr,"==================The number of tasks is %d\n",hm_task_count);
+  //fprintf(stderr,"==================The number of tasks is %d\n",hm_task_count);
   for(int i=0;i<MAX_THREADS;i++)
   {
 	if(indexTask[i]<=0)
 		continue;
-  	fprintf(stderr,"==================Thread %d has  %d tasks\n",i,indexTask[i]);
+  	//fprintf(stderr,"==================Thread %d has  %d tasks\n",i,indexTask[i]);
 	for(int j=0;j<indexTask[i];j++){
 		struct hm_task_time* tmp =  newTaskset[i][j];
 		if(tmp != NULL)
 		{
 			//fprintf(stderr,"%lld, %lld, %lld, %lld, %lld, %lld\n", tmp->endTime - tmp->durTime, tmp->endTime, tmp->durTime,tmp->threadId, tmp->taskId,tmp->index);
-			fprintf(fp,"%lld, %lld, %lld, %lld, %lld, %lld\n", tmp->endTime - tmp->durTime - baseTime, tmp->endTime - baseTime, tmp->durTime,tmp->threadId, tmp->taskId,tmp->index);
+			fprintf(fp,"%10.15lf, %10.15lf, %10.15lf, %lld, %lld, %lld\n", (double)(tmp->endTime - tmp->durTime - baseTime)/cpufreq, (double)(tmp->endTime - baseTime)/cpufreq, (double)(tmp->durTime)/cpufreq,tmp->threadId, tmp->taskId,tmp->index);
 			free(tmp);
 		}
 	}
   }
   fclose(fp);
 
+  fp=fopen("cost.txt", "w");
+  fprintf(fp,"%10.15lf\n",(double)(pendtime-baseTime)/cpufreq);//execution time of program
+  fprintf(fp,"%10.15lf\n",(double)stealTime/cpufreq);//try to steal time of program
+  fclose(fp);
   //fprintf(stderr,"********************end************\n");
   /*End*/
 }

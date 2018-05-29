@@ -3831,6 +3831,7 @@ KMP_EXPORT void KMPC_CONVENTION kmpc_set_disp_num_buffers(int);
 /*=================Add by haomeng==============*/
 extern int hm_task_count;// The number of created tasks
 extern cycle_t baseTime;
+extern cycle_t stealTime;
 //extern std::vector<struct hm_task_time*> newTaskset;
 #define MAX_THREADS 100
 #define MAX_TASKS 1000000

@@ -63,6 +63,7 @@
 #include "tsan_annotations.h"
 
 cycle_t baseTime = 0;
+cycle_t stealTime = 0;
 struct kmp_sys_timer {
   struct timespec start;
 };

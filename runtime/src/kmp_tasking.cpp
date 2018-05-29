@@ -1309,6 +1309,8 @@ static void __kmp_invoke_task(kmp_int32 gtid, kmp_task_t *task,
   cycle_t dtime = cend - cbegin;
 
   kmp_taskdata_t *mytaskdata = KMP_TASK_TO_TASKDATA(task);
+  //kmp_taskdata_t *mycurrenttask = KMP_TASK_TO_TASKDATA(mytaskdata);
+  //fprintf(stderr,"====%llu, %llu\n", mytaskdata->td_task_id, mycurrenttask->td_task_id);
   struct hm_task_time* newMyTask = (struct hm_task_time*)malloc(sizeof(struct hm_task_time));
   newMyTask->startTime = cbegin;
   newMyTask->endTime = cend;
@@ -2171,6 +2173,9 @@ static inline int __kmp_execute_tasks_template(
         task = __kmp_remove_my_task(thread, gtid, task_team, is_constrained);
       }
       if ((task == NULL) && (nthreads > 1)) { // Steal a task
+       //add by haomeng
+        cycle_t cbegin=rdtsc2();
+
         int asleep = 1;
         use_own_tasks = 0;
         // Try to steal from the last place I stole from successfully.
@@ -2238,6 +2243,10 @@ static inline int __kmp_execute_tasks_template(
           KMP_CHECK_UPDATE(threads_data[tid].td.td_deque_last_stolen, -1);
           victim = -2; // no successful victim found
         }
+        //add by haomeng
+       cycle_t cend=rdtsc2();
+       stealTime += (cend - cbegin);
+       //end
       }
 
       if (task == NULL) // break out of tasking loop
