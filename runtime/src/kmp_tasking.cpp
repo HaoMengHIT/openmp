@@ -1312,8 +1312,8 @@ static void __kmp_invoke_task(kmp_int32 gtid, kmp_task_t *task,
   //kmp_taskdata_t *mycurrenttask = KMP_TASK_TO_TASKDATA(mytaskdata);
   //fprintf(stderr,"====%llu, %llu\n", mytaskdata->td_task_id, mycurrenttask->td_task_id);
   struct hm_task_time* newMyTask = (struct hm_task_time*)malloc(sizeof(struct hm_task_time));
-  newMyTask->startTime = cbegin;
-  newMyTask->endTime = cend;
+  newMyTask->startTime = cbegin - baseTime;
+  newMyTask->endTime = cend - baseTime;
   newMyTask->durTime = dtime;
   newMyTask->threadId = gtid;
   newMyTask->taskId = mytaskdata->td_task_id;

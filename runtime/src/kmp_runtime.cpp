@@ -5741,6 +5741,11 @@ void __kmp_internal_end_fini(void) { __kmp_internal_end_atexit();
   cpufreq=timeend-timestart;
   //fprintf(stderr,"basetime = %llu, endtime = %llu, cpufreq = %llu\n", baseTime, pendtime, cpufreq);
   FILE *fp=NULL;
+  fp=fopen("cost.txt", "w");
+  fprintf(fp,"%10.15lf\n",(double)(pendtime-baseTime)/cpufreq);//execution time of program
+  fprintf(fp,"%10.15lf\n",(double)stealTime/cpufreq);//try to steal time of program
+  fclose(fp);
+
   fp=fopen("task.txt", "w");
   //fprintf(stderr,"==================The number of tasks is %d\n",hm_task_count);
   for(int i=0;i<MAX_THREADS;i++)
@@ -5753,17 +5758,13 @@ void __kmp_internal_end_fini(void) { __kmp_internal_end_atexit();
 		if(tmp != NULL)
 		{
 			//fprintf(stderr,"%lld, %lld, %lld, %lld, %lld, %lld\n", tmp->endTime - tmp->durTime, tmp->endTime, tmp->durTime,tmp->threadId, tmp->taskId,tmp->index);
-			fprintf(fp,"%10.15lf, %10.15lf, %10.15lf, %lld, %lld, %lld\n", (double)(tmp->endTime - tmp->durTime - baseTime)/cpufreq, (double)(tmp->endTime - baseTime)/cpufreq, (double)(tmp->durTime)/cpufreq,tmp->threadId, tmp->taskId,tmp->index);
+			fprintf(fp,"%8.9lf, %8.9lf, %8.9lf, %lld, %lld\n", (double)(tmp->endTime - tmp->durTime)/cpufreq, (double)(tmp->endTime)/cpufreq, (double)(tmp->durTime)/cpufreq,tmp->threadId, tmp->taskId);
 			free(tmp);
 		}
 	}
   }
   fclose(fp);
 
-  fp=fopen("cost.txt", "w");
-  fprintf(fp,"%10.15lf\n",(double)(pendtime-baseTime)/cpufreq);//execution time of program
-  fprintf(fp,"%10.15lf\n",(double)stealTime/cpufreq);//try to steal time of program
-  fclose(fp);
   //fprintf(stderr,"********************end************\n");
   /*End*/
 }

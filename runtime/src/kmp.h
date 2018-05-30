@@ -3838,12 +3838,12 @@ extern cycle_t stealTime;
 extern struct hm_task_time* newTaskset[MAX_THREADS][MAX_TASKS];
 extern int indexTask[MAX_THREADS];
 struct hm_task_time{ 
-  unsigned long long  startTime; 
-  unsigned long long  endTime; 
-  unsigned long long  durTime;
+  unsigned long  startTime; 
+  unsigned long  endTime; 
+  unsigned long  durTime;
   kmp_int64 threadId;
   kmp_int32 taskId;
-  long long index;
+  unsigned long  index;
 };
 
 //extern std::vector<hm_task_time*> hm_task_times;
